@@ -166,7 +166,7 @@ export default function Chat() {
                         "w-full items-center flex flex-col justify-center gap-3"
                       }
                     >
-                      <div className={"mt-5"}> An Error Occurred.</div>
+                      <div className={"mt-5"}> An Error Occurred</div>
                       <button
                         className={"underline font-bold "}
                         type="button"
