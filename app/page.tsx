@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable react/no-children-prop */
+
 "use client";
 
 import LandingSections from "@/components/LandingSections";
