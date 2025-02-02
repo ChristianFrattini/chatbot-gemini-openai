@@ -41,6 +41,8 @@ export default function Chat() {
     error,
   } = useChat({ api: "/api/gemini" });
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 200) {
@@ -63,6 +65,12 @@ export default function Chat() {
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
   };
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -135,10 +143,58 @@ export default function Chat() {
                   {messages?.map((message, index) => (
                     <div
                       key={index}
-                      className={
-                        "flex felx-col items-start space-x-2 px-4 py-3 text-sm"
-                      }
-                    ></div>
+                      className={`mb-4 ${
+                        message.role === "user" ? "text-right" : "text-left"
+                      }`}
+                    >
+                      <div
+                        className={`inline-block p-2 rounded-lg ${
+                          message.role === "user"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted"
+                        }`}
+                      >
+                        <ReactMarkdown
+                          children={message.content}
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            code({
+                              node,
+                              // @ts-ignore
+                              inline,
+                              className,
+                              children,
+                              ...props
+                            }) {
+                              return inline ? (
+                                <code
+                                  {...props}
+                                  className={"bg-gray-200 px-1 rounded"}
+                                >
+                                  {children}
+                                </code>
+                              ) : (
+                                // @ts-ignore
+                                <pre
+                                  {...props}
+                                  className={"bg-gray-200 p-2 rounded"}
+                                >
+                                  <code>{children}</code>
+                                </pre>
+                              );
+                            },
+                            ul: ({ children }) => (
+                              <ul className={"list-disc ml-4 "}>{children}</ul>
+                            ),
+                            ol: ({ children }) => (
+                              <ul className={"list-decimal ml-4 "}>
+                                {children}
+                              </ul>
+                            ),
+                          }}
+                        />
+                      </div>
+                    </div>
                   ))}
 
                   {isLoading && (
@@ -176,6 +232,8 @@ export default function Chat() {
                       </button>
                     </div>
                   )}
+
+                  <div ref={scrollRef}></div>
                 </ScrollArea>
               </CardContent>
               <CardFooter>
